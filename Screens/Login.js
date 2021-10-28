@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Button, TextInput, View, StyleSheet } from "react-native";
-import firebase from "firebase";
+import { Button, TextInput, View, StyleSheet, Alert } from "react-native";
+import { auth, firebase } from "../firebase";
 import { useDispatch } from "react-redux";
-import { signedIn } from "../redux/features/signedIn";
-import { updateUser } from "../redux/features/user";
+import { setActiveUser } from "../redux/features/userSlice";
 
 function Login(props) {
 	const [email, setEmail] = useState("");
@@ -11,15 +10,22 @@ function Login(props) {
 	const dispatch = useDispatch();
 
 	const login = () => {
-		firebase
-			.auth()
-			.signInWithEmailAndPassword(email, password)
+		auth.signInWithEmailAndPassword(email, password)
 			.then((result) => {
-				dispatch(signedIn());
-				// dispatch(updateUser());
+				firebase
+					.firestore()
+					.collection("users")
+					.doc(result.user.uid)
+					.get()
+					.then((snapshot) => {
+						if (snapshot.exists) {
+							console.log(snapshot.data());
+							dispatch(setActiveUser(snapshot.data()));
+						}
+					});
 			})
 			.catch((error) => {
-				console.log(error);
+				Alert.alert(error);
 			});
 	};
 

@@ -2,20 +2,17 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, Button, Alert } from "react-native";
 import { Camera } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
-import firebase from "firebase";
+import { auth } from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "../redux/features/user";
+import { selectUserName, setUserLogOutState } from "../redux/features/userSlice";
 
 import textStyles from "../styles/TextStyles";
 import StatBox from "../components/StatBox";
-import signedIn from "../redux/features/signedIn";
 
 function CharacterWindow(props) {
 	const [hasPermissions, setHasPermission] = useState(null);
 	const dispatch = useDispatch();
-	const user = useSelector((state) => {
-		return state.signedIn.userData;
-	});
+	const userName = useSelector(selectUserName);
 
 	// useEffect(() => {
 	// 	dispatch(updateUser());
@@ -37,20 +34,17 @@ function CharacterWindow(props) {
 	};
 
 	const signOut = () => {
-		firebase
-			.auth()
-			.signOut()
+		auth.signOut()
 			.then(() => {
 				console.log("User Signed Out");
-				dispatch(signedIn());
-				// dispatch(updateUser());
+				dispatch(setUserLogOutState());
 			})
 			.catch((error) => {
 				Alert.alert(error);
 			});
 	};
 
-	if (user.name === "") {
+	if (userName === "") {
 		return (
 			<View>
 				<Text>Loading...</Text>
@@ -60,7 +54,7 @@ function CharacterWindow(props) {
 		return (
 			<View style={styles.main}>
 				<View style={[styles.container]}>
-					<Text style={textStyles.mainText}>Hello {user.name}!</Text>
+					<Text style={textStyles.mainText}>Hello {userName}!</Text>
 					<View style={styles.statContainer}>
 						<StatBox name='STR' num='13' />
 						<StatBox name='DEX' num='13' />

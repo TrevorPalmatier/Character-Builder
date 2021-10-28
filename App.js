@@ -1,34 +1,19 @@
 import React, { useEffect } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import firebase from "firebase";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import { updateUser } from "./redux/features/user";
 import store from "./redux/store/store";
 
-import { useAuth, useContext, userContext } from "./context";
 import CharacterWindow from "./Screens/CharacterWindow";
 import CameraScreen from "./Screens/CameraScreen";
 import Landing from "./Screens/Landing";
 import * as screens from "./Screens/Screens";
+import { selectUserEmail, selectUserName } from "./redux/features/userSlice";
 
 const Stack = createNativeStackNavigator();
 // const store = createStore(rootReducer, applyMiddleware(thunk));
-
-const firebaseConfig = {
-	apiKey: "AIzaSyCU66yXQ03reHrkWl_xoDLihrU2x5n5b50",
-	authDomain: "characterbuilder-f1603.firebaseapp.com",
-	projectId: "characterbuilder-f1603",
-	storageBucket: "characterbuilder-f1603.appspot.com",
-	messagingSenderId: "949751757729",
-	appId: "1:949751757729:web:c1173ace6581a7a10829e0",
-};
-
-if (firebase.apps.length === 0) {
-	firebase.initializeApp(firebaseConfig);
-}
 
 export default function App() {
 	return (
@@ -39,14 +24,13 @@ export default function App() {
 }
 
 const Main = (props) => {
-	const user = useSelector((state) => {
-		return state.signedIn.currentUser;
-	});
+	const userName = useSelector(selectUserName);
+	// const userEmail = useSelector(selectUserEmail);
 
 	return (
 		<NavigationContainer>
 			<Stack.Navigator initialRouteName='Landing'>
-				{user ? (
+				{userName ? (
 					<>
 						<Stack.Screen name='Home' component={CharacterWindow} options={{ headerShown: false }} />
 						<Stack.Screen

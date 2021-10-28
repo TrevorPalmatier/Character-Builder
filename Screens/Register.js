@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Button, TextInput, View, StyleSheet } from "react-native";
-import firebase from "firebase";
+import { Button, TextInput, View, StyleSheet, Alert } from "react-native";
+import { auth, firebase } from "../firebase";
 import { useDispatch } from "react-redux";
-import { signedIn } from "../redux/features/signedIn";
-import { updateUser } from "../redux/features/user";
+import { setActiveUser } from "../redux/features/userSlice";
 
 function Register(props) {
 	const [name, setName] = useState("");
@@ -12,16 +11,14 @@ function Register(props) {
 	const dispatch = useDispatch();
 
 	const onSignUp = () => {
-		firebase
-			.auth()
-			.createUserWithEmailAndPassword(email, password)
+		auth.createUserWithEmailAndPassword(email, password)
 			.then((result) => {
-				firebase.firestore().collection("users").doc(firebase.auth().currentUser.uid).set({ name, email });
-				dispatch(signedIn());
+				firebase.firestore().collection("users").doc(auth().currentUser.uid).set({ name, email });
+				dispatch(setActiveUser(result));
 				// dispatch(updateUser());
 			})
 			.catch((error) => {
-				console.log(error);
+				Alert.alert(error);
 			});
 	};
 
