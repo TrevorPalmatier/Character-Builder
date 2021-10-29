@@ -1,7 +1,30 @@
 import React from "react";
+import { firestore, auth } from "../firebase";
 import { View, Button, StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
+import { setActiveUser } from "../redux/features/userSlice";
 
 function Landing(props) {
+	const dispatch = useDispatch();
+
+	const cheat = () => {
+		auth.signInWithEmailAndPassword("tsp@gmail.com", "qwerty")
+			.then((result) => {
+				firestore
+					.collection("users")
+					.doc(result.user.uid)
+					.get()
+					.then((snapshot) => {
+						if (snapshot.exists) {
+							dispatch(setActiveUser(snapshot.data()));
+						}
+					});
+			})
+			.catch((error) => {
+				Alert.alert(error);
+			});
+	};
+
 	return (
 		<View style={styles.container}>
 			<Button
@@ -14,6 +37,12 @@ function Landing(props) {
 				title='Log In'
 				onPress={() => {
 					props.navigation.navigate("Login");
+				}}
+			/>
+			<Button
+				title='Cheat'
+				onPress={() => {
+					cheat();
 				}}
 			/>
 		</View>

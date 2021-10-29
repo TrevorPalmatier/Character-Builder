@@ -14,6 +14,7 @@ if (firebase.apps.length === 0) {
 }
 
 const auth = firebase.auth();
+const firestore = firebase.firestore();
 const provider = new firebase.auth.EmailAuthProvider();
 
-export { auth, provider, firebase };
+export { auth, provider, firebase, firestore };

@@ -11,6 +11,7 @@ import CameraScreen from "./Screens/CameraScreen";
 import Landing from "./Screens/Landing";
 import * as screens from "./Screens/Screens";
 import { selectUserEmail, selectUserName } from "./redux/features/userSlice";
+import CharacterSelectScreen from "./Screens/CharacterSelectScreen";
 
 const Stack = createNativeStackNavigator();
 // const store = createStore(rootReducer, applyMiddleware(thunk));
@@ -32,7 +33,12 @@ const Main = (props) => {
 			<Stack.Navigator initialRouteName='Landing'>
 				{userName ? (
 					<>
-						<Stack.Screen name='Home' component={CharacterWindow} options={{ headerShown: false }} />
+						<Stack.Screen name='CharacterSelect' component={CharacterSelectScreen} />
+						<Stack.Screen
+							name='CharacterPage'
+							component={CharacterWindow}
+							options={{ headerShown: false }}
+						/>
 						<Stack.Screen
 							name='Camera'
 							component={CameraScreen}

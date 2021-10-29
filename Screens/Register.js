@@ -13,9 +13,8 @@ function Register(props) {
 	const onSignUp = () => {
 		auth.createUserWithEmailAndPassword(email, password)
 			.then((result) => {
-				firebase.firestore().collection("users").doc(auth().currentUser.uid).set({ name, email });
-				dispatch(setActiveUser(result));
-				// dispatch(updateUser());
+				firebase.firestore().collection("users").doc(auth.currentUser.uid).set({ name, email });
+				dispatch(setActiveUser({ name, email }));
 			})
 			.catch((error) => {
 				Alert.alert(error);

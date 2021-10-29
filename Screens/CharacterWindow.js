@@ -13,6 +13,7 @@ function CharacterWindow(props) {
 	const [hasPermissions, setHasPermission] = useState(null);
 	const dispatch = useDispatch();
 	const userName = useSelector(selectUserName);
+	const { character } = props.route.params;
 
 	// useEffect(() => {
 	// 	dispatch(updateUser());
@@ -44,24 +45,24 @@ function CharacterWindow(props) {
 			});
 	};
 
-	if (userName === "") {
+	if (userName === null) {
 		return (
-			<View>
-				<Text>Loading...</Text>
+			<View style={styles.main}>
+				<Text style={textStyles.mainText}>Loading...</Text>
 			</View>
 		);
 	} else {
 		return (
 			<View style={styles.main}>
 				<View style={[styles.container]}>
-					<Text style={textStyles.mainText}>Hello {userName}!</Text>
+					<Text style={textStyles.mainText}>Hello {character.name}!</Text>
 					<View style={styles.statContainer}>
-						<StatBox name='STR' num='13' />
-						<StatBox name='DEX' num='13' />
-						<StatBox name='CON' num='15' />
-						<StatBox name='INT' num='12' />
-						<StatBox name='WIS' num='9' />
-						<StatBox name='CHA' num='7' />
+						<StatBox name='STR' num={character.str} />
+						<StatBox name='DEX' num={character.dex} />
+						<StatBox name='CON' num={character.con} />
+						<StatBox name='INT' num={character.int} />
+						<StatBox name='WIS' num={character.wis} />
+						<StatBox name='CHA' num={character.cha} />
 					</View>
 					<View style={styles.buttonContainer}>
 						<Button

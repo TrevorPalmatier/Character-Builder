@@ -19,7 +19,6 @@ function Login(props) {
 					.get()
 					.then((snapshot) => {
 						if (snapshot.exists) {
-							console.log(snapshot.data());
 							dispatch(setActiveUser(snapshot.data()));
 						}
 					});
