@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: "#29293d",
 		width: "90%",
-		height: 80,
-		margin: 15,
+		height: 60,
+		margin: 5,
 	},
 	button: {
 		flex: 1,

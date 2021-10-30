@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { firestore, auth } from "../firebase";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import textStyles from "../styles/TextStyles";
 import CharacterCard from "../components/CharacterCard";
 
@@ -8,6 +8,7 @@ export default function CharacterSelectScreen(props) {
 	const [characters, setCharacters] = useState([]);
 
 	useEffect(() => {
+		console.log("hit");
 		firestore
 			.collection("users")
 			.doc(auth.currentUser.uid)
@@ -28,6 +29,10 @@ export default function CharacterSelectScreen(props) {
 		});
 	};
 
+	const handleNewCharacter = () => {
+		props.navigation.navigate("CharacterCreation");
+	};
+
 	return (
 		<View style={styles.main}>
 			<View style={styles.container}>
@@ -42,6 +47,13 @@ export default function CharacterSelectScreen(props) {
 					);
 				})}
 			</View>
+			<TouchableOpacity
+				style={styles.button}
+				onPress={() => {
+					handleNewCharacter();
+				}}>
+				<Text style={textStyles.mainText}> New Character</Text>
+			</TouchableOpacity>
 		</View>
 	);
 }
@@ -52,9 +64,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "#404040",
 		width: "100%",
 		height: "100%",
+		alignItems: "center",
 	},
 	container: {
-		paddingTop: 60,
+		paddingTop: 20,
 		flex: 1,
 		flexDirection: "column",
 		backgroundColor: "#404040",
@@ -62,14 +75,12 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: "100%",
 	},
-	statContainer: {
-		flex: 1,
-		flexWrap: "wrap",
-		flexDirection: "row",
-		justifyContent: "space-evenly",
+	button: {
+		justifyContent: "center",
 		alignItems: "center",
-	},
-	buttonContainer: {
-		flex: 1,
+		width: "90%",
+		height: 60,
+		backgroundColor: "#29293d",
+		bottom: 30,
 	},
 });

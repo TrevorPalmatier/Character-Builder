@@ -57,12 +57,12 @@ function CharacterWindow(props) {
 				<View style={[styles.container]}>
 					<Text style={textStyles.mainText}>Hello {character.name}!</Text>
 					<View style={styles.statContainer}>
-						<StatBox name='STR' num={character.str} />
-						<StatBox name='DEX' num={character.dex} />
-						<StatBox name='CON' num={character.con} />
-						<StatBox name='INT' num={character.int} />
-						<StatBox name='WIS' num={character.wis} />
-						<StatBox name='CHA' num={character.cha} />
+						<StatBox name='STR' num={character.stats[0]} />
+						<StatBox name='DEX' num={character.stats[1]} />
+						<StatBox name='CON' num={character.stats[2]} />
+						<StatBox name='INT' num={character.stats[3]} />
+						<StatBox name='WIS' num={character.stats[4]} />
+						<StatBox name='CHA' num={character.stats[5]} />
 					</View>
 					<View style={styles.buttonContainer}>
 						<Button
