@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, ScrollView, Pressable, Alert } from "react-native";
 import { auth, firestore } from "../firebase";
 import textStyles from "../styles/TextStyles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function CharacterCreationScreen(props) {
 	const [statValues, setStatValues] = useState([-1, -1, -1, -1, -1, -1]);
@@ -65,7 +66,13 @@ export default function CharacterCreationScreen(props) {
 	};
 
 	return (
-		<ScrollView keyboardDismissMode='on-drag' bounces={false} contentContainerStyle={styles.main}>
+		<KeyboardAwareScrollView
+			keyboardDismissMode='on-drag'
+			bounces={false}
+			contentContainerStyle={styles.main}
+			style={{ backgroundColor: "#404040" }}
+			resetScrollToCoords={{ x: 0, y: 0 }}
+			extraScrollHeight={20}>
 			<View style={styles.main}>
 				<View style={styles.nameContainer}>
 					<Text style={textStyles.mainText}>Name:</Text>
@@ -105,7 +112,7 @@ export default function CharacterCreationScreen(props) {
 					</Pressable>
 				</View>
 			</View>
-		</ScrollView>
+		</KeyboardAwareScrollView>
 	);
 }
 
