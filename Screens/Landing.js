@@ -10,13 +10,14 @@ function Landing(props) {
 	const cheat = () => {
 		auth.signInWithEmailAndPassword("tsp@gmail.com", "qwerty")
 			.then((result) => {
+				let uid = result.user.uid;
 				firestore
 					.collection("users")
-					.doc(result.user.uid)
+					.doc(uid)
 					.get()
 					.then((snapshot) => {
 						if (snapshot.exists) {
-							dispatch(setActiveUser(snapshot.data()));
+							dispatch(setActiveUser({ data: snapshot.data(), uid }));
 						}
 					});
 			})

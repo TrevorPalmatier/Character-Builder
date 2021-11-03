@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "./redux/store/store";
+import "react-native-gesture-handler";
 
 import CharacterWindow from "./Screens/CharacterWindow";
 import CameraScreen from "./Screens/CameraScreen";
@@ -12,11 +11,9 @@ import Landing from "./Screens/Landing";
 import * as screens from "./Screens/Screens";
 import { selectUserEmail, selectUserName } from "./redux/features/userSlice";
 import CharacterSelectScreen from "./Screens/CharacterSelectScreen";
-import CharacterCreation from "./Screens/CharacterCreationScreen";
 import CharacterCreationScreen from "./Screens/CharacterCreationScreen";
 
 const Stack = createNativeStackNavigator();
-// const store = createStore(rootReducer, applyMiddleware(thunk));
 
 export default function App() {
 	return (
@@ -28,7 +25,6 @@ export default function App() {
 
 const Main = (props) => {
 	const userName = useSelector(selectUserName);
-	// const userEmail = useSelector(selectUserEmail);
 
 	return (
 		<NavigationContainer>
@@ -41,7 +37,11 @@ const Main = (props) => {
 							component={CharacterWindow}
 							options={{ headerShown: false }}
 						/>
-						<Stack.Screen name='CharacterCreation' component={CharacterCreationScreen} />
+						<Stack.Screen
+							name='CharacterCreation'
+							component={CharacterCreationScreen}
+							options={{ presentation: "modal", headerShown: false }}
+						/>
 						<Stack.Screen
 							name='Camera'
 							component={CameraScreen}
@@ -63,11 +63,3 @@ const Main = (props) => {
 		</NavigationContainer>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-});

@@ -16,12 +16,14 @@ const StatBox = (props) => {
 	const changeStatValue = (newStat) => {
 		if (newStat !== "") setStatValue(newStat);
 		setIsChangeStat(false);
+		props.update(props.index, Number(newStat));
 	};
 
 	return (
 		<View style={styles.statBox}>
 			<Text style={textStyles.mainText}>{props.name}</Text>
 			<TouchableOpacity
+				style={styles.center}
 				onPress={() => {
 					statChangeView(true);
 				}}>
@@ -29,6 +31,9 @@ const StatBox = (props) => {
 					<View style={styles.scoreText}>
 						<Text style={textStyles.mainText}>{statValue}</Text>
 					</View>
+				</View>
+				<View style={styles.modBox}>
+					<Text style={styles.modText}>{Math.trunc(statValue / 2) - 5}</Text>
 				</View>
 			</TouchableOpacity>
 			<ChangeStatModal visible={isChangeStat} setVisible={statChangeView} changeStat={changeStatValue} />
@@ -45,26 +50,47 @@ const styles = StyleSheet.create({
 	statBox: {
 		backgroundColor: "#29293d",
 		width: 100,
-		height: 100,
+		height: 120,
 		justifyContent: "center",
 		alignItems: "center",
 		borderColor: "white",
 		borderWidth: 2,
+		borderRadius: 5,
 		padding: 10,
 		marginTop: 10,
 	},
 	numBox: {
-		width: 45,
-		height: 45,
+		width: 47,
+		height: 47,
 		backgroundColor: "#404040",
 		borderRadius: 5,
 		borderColor: "white",
 		borderWidth: 2,
 		padding: 10,
-		margin: 10,
+		marginTop: 5,
 	},
 	scoreText: {
 		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	modBox: {
+		width: 30,
+		height: 30,
+		backgroundColor: "#404040",
+		borderColor: "white",
+		borderTopWidth: 0,
+		borderWidth: 1,
+		borderBottomLeftRadius: 5,
+		borderBottomRightRadius: 5,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	modText: {
+		color: "white",
+		fontSize: 15,
+	},
+	center: {
 		justifyContent: "center",
 		alignItems: "center",
 	},

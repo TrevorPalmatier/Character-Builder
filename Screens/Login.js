@@ -12,14 +12,15 @@ function Login(props) {
 	const login = () => {
 		auth.signInWithEmailAndPassword(email, password)
 			.then((result) => {
+				let uid = result.user.uid;
 				firebase
 					.firestore()
 					.collection("users")
-					.doc(result.user.uid)
+					.doc(uid)
 					.get()
 					.then((snapshot) => {
 						if (snapshot.exists) {
-							dispatch(setActiveUser(snapshot.data()));
+							dispatch(setActiveUser({ data: snapshot.data(), uid }));
 						}
 					});
 			})

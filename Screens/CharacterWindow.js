@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, Button, Alert } from "react-native";
+import { View, StyleSheet, Text, Button, Alert, ScrollView, StatusBar } from "react-native";
 import { Camera } from "expo-camera";
-import { StatusBar } from "expo-status-bar";
-import { auth } from "../firebase";
+import { auth, firestore } from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUserName, setUserLogOutState } from "../redux/features/userSlice";
+import { selectUID, setUserLogOutState } from "../redux/features/userSlice";
 
 import textStyles from "../styles/TextStyles";
 import StatBox from "../components/StatBox";
+import { selectCharacter, selectID } from "../redux/features/characterSlice";
+import SavingThrow from "../components/SavingThrow";
 
 function CharacterWindow(props) {
 	const [hasPermissions, setHasPermission] = useState(null);
+	const [character, setCharacter] = useState(useSelector(selectCharacter));
 	const dispatch = useDispatch();
-	const userName = useSelector(selectUserName);
-	const { character } = props.route.params;
-
-	// useEffect(() => {
-	// 	dispatch(updateUser());
-	// });
+	const id = useSelector(selectID);
+	const uid = useSelector(selectUID);
 
 	const useCamera = async () => {
 		if (hasPermissions !== true) {
 			const { status } = await Camera.requestCameraPermissionsAsync();
-			console.log(status);
 			setHasPermission(status === "granted");
 			if (status === "granted") {
 				props.navigation.navigate("Camera");
@@ -32,6 +29,14 @@ function CharacterWindow(props) {
 		} else {
 			props.navigation.navigate("Camera");
 		}
+	};
+
+	const handleUpdateCharacter = (index, value) => {
+		const newStats = [...character.stats];
+		newStats[index] = value;
+		const newChar = { name: character.name, stats: newStats };
+		setCharacter(newChar);
+		firestore.collection("users").doc(uid).collection("characters").doc(id).update(newChar);
 	};
 
 	const signOut = () => {
@@ -45,43 +50,61 @@ function CharacterWindow(props) {
 			});
 	};
 
-	if (userName === null) {
-		return (
-			<View style={styles.main}>
-				<Text style={textStyles.mainText}>Loading...</Text>
-			</View>
-		);
-	} else {
-		return (
-			<View style={styles.main}>
-				<View style={[styles.container]}>
-					<Text style={textStyles.mainText}>Hello {character.name}!</Text>
-					<View style={styles.statContainer}>
-						<StatBox name='STR' num={character.stats[0]} />
-						<StatBox name='DEX' num={character.stats[1]} />
-						<StatBox name='CON' num={character.stats[2]} />
-						<StatBox name='INT' num={character.stats[3]} />
-						<StatBox name='WIS' num={character.stats[4]} />
-						<StatBox name='CHA' num={character.stats[5]} />
-					</View>
-					<View style={styles.buttonContainer}>
-						<Button
-							title='Take Picture'
-							onPress={() => {
-								useCamera();
-							}}
-						/>
-						<Button
-							title='Sign Out'
-							onPress={() => {
-								signOut();
-							}}
-						/>
-					</View>
+	return (
+		<View style={styles.main}>
+			<ScrollView contentContainerStyle={[styles.container]} bounces={false}>
+				<Text style={textStyles.mainText}>Hello {character.name}!</Text>
+				<View style={styles.statContainer}>
+					<StatBox name='STR' num={character.stats[0]} index={0} update={handleUpdateCharacter} />
+					<StatBox name='DEX' num={character.stats[1]} index={1} update={handleUpdateCharacter} />
+					<StatBox name='CON' num={character.stats[2]} index={2} update={handleUpdateCharacter} />
+					<StatBox name='INT' num={character.stats[3]} index={3} update={handleUpdateCharacter} />
+					<StatBox name='WIS' num={character.stats[4]} index={4} update={handleUpdateCharacter} />
+					<StatBox name='CHA' num={character.stats[5]} index={5} update={handleUpdateCharacter} />
 				</View>
-			</View>
-		);
-	}
+				<View style={styles.savingThrowContainer}>
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+					<SavingThrow />
+				</View>
+				<View>
+					<Button
+						title='Take Picture'
+						onPress={() => {
+							useCamera();
+						}}
+					/>
+					<Button
+						title='Sign Out'
+						onPress={() => {
+							signOut();
+						}}
+					/>
+				</View>
+			</ScrollView>
+		</View>
+	);
 }
 
 const styles = StyleSheet.create({
@@ -89,26 +112,33 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: "100%",
 		height: "100%",
+		backgroundColor: "#404040",
+		paddingTop: StatusBar.currentHeight,
 	},
 	container: {
-		paddingTop: 60,
 		flex: 1,
 		flexDirection: "column",
 		backgroundColor: "#404040",
 		alignItems: "center",
-		justifyContent: "space-around",
 		width: "100%",
 		height: "100%",
 	},
 	statContainer: {
-		flex: 1,
+		width: "100%",
 		flexWrap: "wrap",
 		flexDirection: "row",
 		justifyContent: "space-evenly",
 		alignItems: "center",
+		paddingBottom: 10,
+		borderBottomColor: "gray",
+		borderBottomWidth: 1,
 	},
-	buttonContainer: {
-		flex: 1,
+	savingThrowContainer: {
+		width: "100%",
+		flexDirection: "row",
+		justifyContent: "space-around",
+		flexWrap: "wrap",
+		paddingBottom: 10,
 	},
 });
 

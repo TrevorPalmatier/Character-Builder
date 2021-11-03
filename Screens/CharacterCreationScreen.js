@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, ScrollView, Pressable, Alert } from "react-native";
+import { View, Text, StyleSheet, TextInput, Pressable, Alert } from "react-native";
 import { auth, firestore } from "../firebase";
 import textStyles from "../styles/TextStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { StackActions } from "@react-navigation/routers";
 
 export default function CharacterCreationScreen(props) {
 	const [statValues, setStatValues] = useState([-1, -1, -1, -1, -1, -1]);
@@ -22,7 +23,6 @@ export default function CharacterCreationScreen(props) {
 	};
 
 	const handleCreateCharacter = () => {
-		console.log("hello");
 		for (const value of statValues) {
 			if (value === -1) {
 				Alert.alert("Please fill in all stats");
@@ -43,7 +43,9 @@ export default function CharacterCreationScreen(props) {
 				result
 					.get()
 					.then((snapshot) => {
-						props.navigation.navigate("CharacterPage", { character: snapshot.data() });
+						props.navigation.dispatch(
+							StackActions.replace("CharacterPage", { character: snapshot.data() })
+						);
 					})
 					.catch((error) => {
 						Alert.alert(error);
