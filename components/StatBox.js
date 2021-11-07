@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
 	numBox: {
 		width: 47,
 		height: 47,
-		backgroundColor: "#404040",
+		backgroundColor: "#353535",
 		borderRadius: 5,
 		borderColor: "white",
 		borderWidth: 2,
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
 	modBox: {
 		width: 30,
 		height: 30,
-		backgroundColor: "#404040",
+		backgroundColor: "#353535",
 		borderColor: "white",
 		borderTopWidth: 0,
 		borderWidth: 1,

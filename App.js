@@ -1,4 +1,5 @@
 import React from "react";
+import { Button, Alert } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider, useSelector } from "react-redux";
@@ -12,6 +13,7 @@ import * as screens from "./Screens/Screens";
 import { selectUserEmail, selectUserName } from "./redux/features/userSlice";
 import CharacterSelectScreen from "./Screens/CharacterSelectScreen";
 import CharacterCreationScreen from "./Screens/CharacterCreationScreen";
+import HealthScreen from "./Screens/HealthScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,18 +30,38 @@ const Main = (props) => {
 
 	return (
 		<NavigationContainer>
-			<Stack.Navigator initialRouteName='Landing'>
+			<Stack.Navigator
+				initialRouteName='Landing'
+				screenOptions={{
+					headerTintColor: "white",
+					headerStyle: { backgroundColor: "#555" },
+					headerBackTitle: "Back",
+					headerTitleStyle: { fontSize: 20, fontWeight: "normal" },
+				}}>
 				{userName ? (
 					<>
-						<Stack.Screen name='CharacterSelect' component={CharacterSelectScreen} />
+						<Stack.Screen
+							name='CharacterSelect'
+							component={CharacterSelectScreen}
+							options={{
+								headerTitle: "Characters",
+							}}
+						/>
 						<Stack.Screen
 							name='CharacterPage'
 							component={CharacterWindow}
-							options={{ headerShown: false }}
+							options={({ route }) => ({
+								title: route.params.name,
+							})}
 						/>
 						<Stack.Screen
 							name='CharacterCreation'
 							component={CharacterCreationScreen}
+							options={{ presentation: "modal", headerShown: false }}
+						/>
+						<Stack.Screen
+							name='HealthScreen'
+							component={HealthScreen}
 							options={{ presentation: "modal", headerShown: false }}
 						/>
 						<Stack.Screen

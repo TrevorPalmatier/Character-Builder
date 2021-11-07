@@ -26,7 +26,7 @@ export default function SkillBox(props) {
 			<Text style={styles.modText}>{statToName(props.stat)}</Text>
 			<Text style={styles.titleText}>{props.name}</Text>
 			<View style={styles.numBox}>
-				<Text style={styles.numText}>{props.value}</Text>
+				<Text style={styles.numText}>{Math.trunc(props.value)}</Text>
 			</View>
 		</View>
 	);

@@ -6,9 +6,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { StackActions } from "@react-navigation/routers";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUID } from "../redux/features/userSlice";
+import { setActiveCharacter } from "../redux/features/characterSlice";
 
 export default function CharacterCreationScreen(props) {
 	const [statValues, setStatValues] = useState([-1, -1, -1, -1, -1, -1]);
+	const [health, setHealth] = useState(-1);
 	const [characterName, setCharacterName] = useState("");
 	const dispatch = useDispatch();
 	const uid = useSelector(selectUID);
@@ -57,25 +59,20 @@ export default function CharacterCreationScreen(props) {
 			Alert.alert("Please fill in a character name");
 			return;
 		}
-		console.log("through");
 
-		const character = { name: characterName, stats: statValues, skills };
-
-		console.log(character);
+		const character = { name: characterName, stats: statValues, skills, maxHealth: health, health };
 
 		firestore
 			.collection("users")
 			.doc(uid)
 			.collection("characters")
-			.add({ name: characterName, stats: statValues, skills: skills })
+			.add(character)
 			.then((result) => {
-				console.log("added");
 				result
 					.get()
 					.then((snapshot) => {
 						dispatch(setActiveCharacter({ data: snapshot.data(), id: snapshot.id }));
-						console.log("reeeee");
-						props.navigation.dispatch(StackActions.replace("CharacterPage"));
+						props.navigation.dispatch(StackActions.replace("CharacterPage", { name: characterName }));
 					})
 					.catch((error) => {
 						Alert.alert(error);
@@ -91,12 +88,19 @@ export default function CharacterCreationScreen(props) {
 			setCharacterName(enteredText);
 		}
 	};
+	const handleHealthInput = (enteredText) => {
+		const inputNum = Number(enteredText);
+		if (inputNum !== NaN && inputNum > 0) {
+			setHealth(Number(enteredText));
+		}
+	};
 
 	return (
 		<KeyboardAwareScrollView
-			keyboardDismissMode='on-drag'
+			// keyboardDismissMode='on-drag'
 			bounces={false}
 			contentContainerStyle={styles.main}
+			showsVerticalScrollIndicator={false}
 			style={{ backgroundColor: "#404040" }}
 			resetScrollToCoords={{ x: 0, y: 0 }}
 			extraScrollHeight={20}>
@@ -104,7 +108,7 @@ export default function CharacterCreationScreen(props) {
 				<View style={styles.nameContainer}>
 					<Text style={textStyles.mainText}>Name:</Text>
 					<TextInput
-						style={styles.input}
+						style={[styles.input, styles.nameInput]}
 						placeholder='Enter Name'
 						placeholderTextColor='#a6a6a6'
 						keyboardAppearance='dark'
@@ -113,17 +117,31 @@ export default function CharacterCreationScreen(props) {
 							handleNameInput(enteredText);
 						}}></TextInput>
 				</View>
+				<View style={styles.nameContainer}>
+					<Text style={textStyles.mainText}>Max Health:</Text>
+					<TextInput
+						style={[styles.input, styles.healthInput]}
+						placeholder='Enter Max Health'
+						placeholderTextColor='#a6a6a6'
+						keyboardType='numeric'
+						keyboardAppearance='dark'
+						textAlign='center'
+						onChangeText={(enteredText) => {
+							handleHealthInput(enteredText);
+						}}></TextInput>
+				</View>
 				<View style={styles.statContainer}>
 					{statNames.map((name, index) => {
 						return (
 							<View key={index} style={styles.statBox}>
 								<Text style={textStyles.mainText}>{name}</Text>
 								<TextInput
-									style={styles.input}
+									style={[styles.input, styles.statInput]}
 									maxLength={2}
 									placeholder='Stat Value'
 									placeholderTextColor='#a6a6a6'
 									keyboardType='numeric'
+									keyboardAppearance='dark'
 									textAlign='center'
 									onChangeText={(enteredText) => {
 										handleStatInput(enteredText, index);
@@ -145,27 +163,36 @@ export default function CharacterCreationScreen(props) {
 
 const styles = StyleSheet.create({
 	main: {
-		flex: 1,
 		backgroundColor: "#404040",
 		width: "100%",
-		height: "100%",
 		alignItems: "center",
 	},
 	statContainer: {
-		flex: 1,
-		paddingTop: 20,
+		paddingTop: 10,
 		flexWrap: "wrap",
 		flexDirection: "row",
 		justifyContent: "space-evenly",
 		alignItems: "center",
+		paddingBottom: 10,
+		borderBottomColor: "gray",
+		borderBottomWidth: 0.5,
 	},
 	input: {
-		width: "80%",
 		padding: 10,
 		margin: 10,
 		borderWidth: 1,
 		borderColor: "white",
 		color: "white",
+		backgroundColor: "#353535",
+	},
+	nameInput: {
+		width: "80%",
+	},
+	statInput: {
+		width: "80%",
+	},
+	healthInput: {
+		width: "60%",
 	},
 	statBox: {
 		backgroundColor: "#29293d",
@@ -187,15 +214,19 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",
+		borderBottomColor: "gray",
+		borderBottomWidth: 0.5,
+		paddingBottom: 10,
 	},
 	buttonContainer: {
 		width: "90%",
 		height: 50,
-		bottom: 70,
 		backgroundColor: "#29293d",
 		justifyContent: "center",
 		alignItems: "center",
 		borderRadius: 5,
+		marginTop: 10,
+		marginBottom: 50,
 	},
 	pressable: {
 		flex: 1,

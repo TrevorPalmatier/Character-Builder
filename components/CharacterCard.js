@@ -27,7 +27,7 @@ export default function CharacterCard(props) {
 					}}>
 					<Text
 						style={{
-							color: "black",
+							color: "white",
 							paddingHorizontal: 10,
 							fontWeight: "600",
 							paddingHorizontal: 30,

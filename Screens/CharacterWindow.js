@@ -4,40 +4,60 @@ import { Camera } from "expo-camera";
 import { auth, firestore } from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUID, setUserLogOutState } from "../redux/features/userSlice";
+import { useFocusEffect } from "@react-navigation/core";
 
 import textStyles from "../styles/TextStyles";
 import StatBox from "../components/StatBox";
-import { selectCharacter, selectID } from "../redux/features/characterSlice";
+import { deselectCharacter, selectCharacter, selectID, setActiveCharacter } from "../redux/features/characterSlice";
 import SavingThrow from "../components/SavingThrow";
 import SkillBox from "../components/SkillBox";
+import HealthTracker from "../components/HealthTracker";
 
-function CharacterWindow(props) {
+function CharacterWindow({ navigation }) {
+	const character = useSelector(selectCharacter);
 	const [hasPermissions, setHasPermission] = useState(null);
-	const [character, setCharacter] = useState(useSelector(selectCharacter));
 	const dispatch = useDispatch();
 	const id = useSelector(selectID);
 	const uid = useSelector(selectUID);
+
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => <HealthTracker press={handleHealth} />,
+		});
+	}, [navigation]);
+
+	useFocusEffect(
+		React.useCallback(() => {
+			return () => {
+				firestore.collection("users").doc(uid).collection("characters").doc(id).update(character);
+			};
+		}, [character])
+	);
+
+	const handleHealth = (nums) => {
+		navigation.navigate("HealthScreen", { nums });
+	};
 
 	const useCamera = async () => {
 		if (hasPermissions !== true) {
 			const { status } = await Camera.requestCameraPermissionsAsync();
 			setHasPermission(status === "granted");
 			if (status === "granted") {
-				props.navigation.navigate("Camera");
+				navigation.navigate("Camera");
 			} else {
 				Alert.alert("Camera permissions were not granted");
 			}
 		} else {
-			props.navigation.navigate("Camera");
+			navigation.navigate("Camera");
 		}
 	};
 
 	const handleUpdateCharacter = (index, value) => {
 		const newStats = [...character.stats];
 		newStats[index] = value;
-		const newChar = { name: character.name, stats: newStats };
-		setCharacter(newChar);
-		firestore.collection("users").doc(uid).collection("characters").doc(id).update(newChar);
+		const newChar = { ...character };
+		newChar.stats = newStats;
+		dispatch(setActiveCharacter({ data: newChar, id }));
 	};
 
 	const signOut = () => {
@@ -51,14 +71,14 @@ function CharacterWindow(props) {
 			});
 	};
 
-	const renderItem = ({ item }) => {
-		return <SkillBox name={item.name} stat={character.stats[item.stat] / 2 - 5 + 2 * item.prof} />;
-	};
-
 	return (
 		<View style={styles.main}>
-			<ScrollView style={{ flex: 1 }} contentContainerStyle={[styles.container]} bounces={false}>
-				<Text style={textStyles.mainText}>Hello {character.name}!</Text>
+			<ScrollView
+				style={{ flex: 1 }}
+				contentContainerStyle={[styles.container]}
+				bounces={false}
+				showsVerticalScrollIndicator={false}>
+				<Text style={[textStyles.mainText, { marginBottom: 10 }]}>Ability Scores</Text>
 				<View style={styles.statContainer}>
 					<StatBox name='STR' num={character.stats[0]} index={0} update={handleUpdateCharacter} />
 					<StatBox name='DEX' num={character.stats[1]} index={1} update={handleUpdateCharacter} />
@@ -89,20 +109,6 @@ function CharacterWindow(props) {
 						);
 					})}
 				</View>
-				<View>
-					<Button
-						title='Take Picture'
-						onPress={() => {
-							useCamera();
-						}}
-					/>
-					<Button
-						title='Sign Out'
-						onPress={() => {
-							signOut();
-						}}
-					/>
-				</View>
 			</ScrollView>
 		</View>
 	);
@@ -114,12 +120,13 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: "100%",
 		backgroundColor: "#404040",
-		paddingTop: StatusBar.currentHeight + 50,
+		// paddingTop: StatusBar.currentHeight + 50,
 	},
 	container: {
 		flexDirection: "column",
 		alignItems: "center",
 		width: "100%",
+		paddingTop: 20,
 	},
 	statContainer: {
 		width: "100%",

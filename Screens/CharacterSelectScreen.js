@@ -1,21 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { firestore, auth } from "../firebase";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Alert } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Alert, Button } from "react-native";
 import { useDispatch } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/core";
 import textStyles from "../styles/TextStyles";
 import CharacterCard from "../components/CharacterCard";
-import { setActiveCharacter } from "../redux/features/characterSlice";
+import { deselectCharacter, setActiveCharacter } from "../redux/features/characterSlice";
+import { setUserLogOutState } from "../redux/features/userSlice";
 
-export default function CharacterSelectScreen(props) {
+export default function CharacterSelectScreen({ navigation }) {
 	const [characters, setCharacters] = useState([]);
 
 	const dispatch = useDispatch();
 
+	React.useLayoutEffect(() => {
+		navigation.setOptions({
+			headerRight: () => (
+				<Button
+					color='white'
+					title='Sign Out'
+					onPress={() => {
+						signOut();
+					}}
+				/>
+			),
+		});
+	}, [navigation]);
+
 	useFocusEffect(
 		React.useCallback(() => {
-			console.log("hit");
+			dispatch(deselectCharacter());
 			firestore
 				.collection("users")
 				.doc(auth.currentUser.uid)
@@ -30,11 +45,22 @@ export default function CharacterSelectScreen(props) {
 		}, [])
 	);
 
+	const signOut = () => {
+		auth.signOut()
+			.then(() => {
+				console.log("User Signed Out");
+				dispatch(setUserLogOutState());
+			})
+			.catch((error) => {
+				Alert.alert(error);
+			});
+	};
+
 	const handleSelectCharacter = (index) => {
 		let character = characters[index];
-		// console.log(character.data());
-		dispatch(setActiveCharacter({ data: character.data(), id: character.id }));
-		props.navigation.navigate("CharacterPage");
+		let characterData = character.data();
+		dispatch(setActiveCharacter({ data: characterData, id: character.id }));
+		navigation.navigate("CharacterPage", { name: characterData.name });
 	};
 
 	const handleDeleteCharacter = (index) => {
@@ -52,7 +78,7 @@ export default function CharacterSelectScreen(props) {
 	};
 
 	const handleNewCharacter = () => {
-		props.navigation.navigate("CharacterCreation");
+		navigation.navigate("CharacterCreation");
 	};
 
 	const renderItem = ({ item, index }) => {
