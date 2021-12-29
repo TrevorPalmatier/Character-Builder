@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { firestore, auth } from "../firebase";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Alert, Button } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Alert, Button, Pressable } from "react-native";
 import { useDispatch } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/core";
@@ -17,13 +17,12 @@ export default function CharacterSelectScreen({ navigation }) {
 	React.useLayoutEffect(() => {
 		navigation.setOptions({
 			headerRight: () => (
-				<Button
-					color='white'
-					title='Sign Out'
+				<Pressable
 					onPress={() => {
 						signOut();
-					}}
-				/>
+					}}>
+					<Text style={{ color: "white", fontSize: 17 }}>Sign Out</Text>
+				</Pressable>
 			),
 		});
 	}, [navigation]);

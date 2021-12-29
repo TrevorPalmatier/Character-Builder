@@ -1,5 +1,4 @@
 import React from "react";
-import { Button, Alert } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Provider, useSelector } from "react-redux";
@@ -10,7 +9,7 @@ import CharacterWindow from "./Screens/CharacterWindow";
 import CameraScreen from "./Screens/CameraScreen";
 import Landing from "./Screens/Landing";
 import * as screens from "./Screens/Screens";
-import { selectUserEmail, selectUserName } from "./redux/features/userSlice";
+import { selectUserName } from "./redux/features/userSlice";
 import CharacterSelectScreen from "./Screens/CharacterSelectScreen";
 import CharacterCreationScreen from "./Screens/CharacterCreationScreen";
 import HealthScreen from "./Screens/HealthScreen";

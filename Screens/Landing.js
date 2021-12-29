@@ -1,6 +1,6 @@
 import React from "react";
 import { firestore, auth } from "../firebase";
-import { View, Button, StyleSheet } from "react-native";
+import { View, Button, StyleSheet, Text, Pressable } from "react-native";
 import { useDispatch } from "react-redux";
 import { setActiveUser } from "../redux/features/userSlice";
 
@@ -28,24 +28,37 @@ function Landing(props) {
 
 	return (
 		<View style={styles.container}>
-			<Button
-				title='Register'
-				onPress={() => {
-					props.navigation.navigate("Register");
-				}}
-			/>
-			<Button
-				title='Log In'
-				onPress={() => {
-					props.navigation.navigate("Login");
-				}}
-			/>
-			<Button
-				title='Cheat'
-				onPress={() => {
-					cheat();
-				}}
-			/>
+			<View style={{ marginBottom: 50, justifyContent: "center", alignItems: "center" }}>
+				<Text style={{ color: "white", fontSize: 30, textAlign: "center", fontWeight: "500" }}>
+					Welcome to the Character Foundry!
+				</Text>
+			</View>
+			<View style={{ alignItems: "center", justifyContent: "center" }}>
+				<View style={styles.padding}>
+					<Pressable
+						onPress={() => {
+							props.navigation.navigate("Register");
+						}}>
+						<Text style={styles.button}>Register</Text>
+					</Pressable>
+				</View>
+				<View style={styles.padding}>
+					<Pressable
+						onPress={() => {
+							props.navigation.navigate("Login");
+						}}>
+						<Text style={styles.button}>Log In</Text>
+					</Pressable>
+				</View>
+				{/* <View style={styles.padding}>
+					<Pressable
+						onPress={() => {
+							cheat();
+						}}>
+						<Text style={styles.button}>Cheat</Text>
+					</Pressable>
+				</View> */}
+			</View>
 		</View>
 	);
 }
@@ -53,10 +66,14 @@ function Landing(props) {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#fff",
+		backgroundColor: "#404040",
 		alignItems: "center",
-		justifyContent: "center",
+		justifyContent: "space-evenly",
 	},
+	padding: {
+		padding: 15,
+	},
+	button: { color: "white", fontSize: 20 },
 });
 
 export default Landing;

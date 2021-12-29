@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, Button, Alert, ScrollView, StatusBar, FlatList } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Text, Alert, ScrollView } from "react-native";
 import { Camera } from "expo-camera";
 import { auth, firestore } from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import { useFocusEffect } from "@react-navigation/core";
 
 import textStyles from "../styles/TextStyles";
 import StatBox from "../components/StatBox";
-import { deselectCharacter, selectCharacter, selectID, setActiveCharacter } from "../redux/features/characterSlice";
+import { selectCharacter, selectID, setActiveCharacter } from "../redux/features/characterSlice";
 import SavingThrow from "../components/SavingThrow";
 import SkillBox from "../components/SkillBox";
 import HealthTracker from "../components/HealthTracker";

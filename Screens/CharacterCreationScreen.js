@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Pressable, Alert } from "react-native";
-import { auth, firestore } from "../firebase";
+import { View, Text, StyleSheet, TextInput, Pressable, Alert, Platform } from "react-native";
+import { firestore } from "../firebase";
 import textStyles from "../styles/TextStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { StackActions } from "@react-navigation/routers";
@@ -105,6 +105,11 @@ export default function CharacterCreationScreen(props) {
 			resetScrollToCoords={{ x: 0, y: 0 }}
 			extraScrollHeight={20}>
 			<View style={styles.main}>
+				<View style={styles.header}>
+					<View style={styles.headerTitleContainer}>
+						<Text style={styles.headerTitle}>Create a Character</Text>
+					</View>
+				</View>
 				<View style={styles.nameContainer}>
 					<Text style={textStyles.mainText}>Name:</Text>
 					<TextInput
@@ -176,6 +181,25 @@ const styles = StyleSheet.create({
 		paddingBottom: 10,
 		borderBottomColor: "gray",
 		borderBottomWidth: 0.5,
+	},
+	header: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#303030",
+		height: Platform.OS === "ios" ? 55 : 75,
+		width: "100%",
+		marginBottom: 5,
+		paddingTop: Platform.OS === "ios" ? 0 : 20,
+	},
+	headerTitleContainer: {
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	headerTitle: {
+		color: "white",
+		fontSize: 18,
+		fontWeight: "500",
 	},
 	input: {
 		padding: 10,

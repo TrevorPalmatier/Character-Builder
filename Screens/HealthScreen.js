@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Button, TextInput, Pressable } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TextInput, Pressable, Platform } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCharacter, selectID, setActiveCharacter } from "../redux/features/characterSlice";
-import Picker from "@gregfrench/react-native-wheel-picker";
+import { Picker } from "@react-native-picker/picker";
 
 export default function HealthScreen({ route }) {
 	const character = useSelector(selectCharacter);
@@ -96,9 +96,10 @@ export default function HealthScreen({ route }) {
 						</View>
 						<View style={styles.pickerContainer}>
 							<Picker
-								style={{ width: 120, height: 140 }}
+								style={{ width: 120, height: 140, color: "white" }}
 								selectedValue={selectedItem}
 								itemStyle={{ color: "white", fontSize: 20 }}
+								dropdownIconColor='white'
 								onValueChange={(index) => handleValueChange(index)}>
 								{itemList.map((value, i) => (
 									<Picker.Item label={value} value={i} key={i} />
@@ -123,9 +124,10 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "#303030",
-		height: 55,
+		height: Platform.OS === "ios" ? 55 : 75,
 		width: "100%",
 		marginBottom: 30,
+		paddingTop: Platform.OS === "ios" ? 0 : 20,
 	},
 	headerTitleContainer: {
 		justifyContent: "center",
